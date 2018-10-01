@@ -2,7 +2,7 @@
 /  %i.fa.fa-users
 /  Community solutions
 
--if @solution.last_updated_by_user_at && @solution.last_updated_by_user_at <= Exercism::V2_MIGRATED_AT && @solution.independent_mode?
+-if @solution.last_updated_by_user_at && @solution.last_updated_by_user_at <= Exercism::V2_MIGRATED_AT && !@solution.mentoring_requested?
   .migration-bar
     This solution has been imported from an old version of the website.
     -if @user_track.mentoring_slots_remaining?
@@ -11,14 +11,9 @@
       %br
       Once your other solutions on this track have been mentored you may request mentoring for this.
 
--elsif @solution.track_in_mentored_mode? && @solution.independent_mode?
-  .migration-bar
-    This solution has been imported from independent mode.
-    -if @user_track.mentoring_slots_remaining?
-      You may request mentoring to unlock its extra exercises.
-      #{link_to "Request mentoring", request_mentoring_my_solution_path(@solution), method: :patch}.
-    -else
-      Mentoring will become available when your other solutions have been mentored.
+-elsif @solution.track_in_mentored_mode? && !@solution.mentoring_requested?
+  .notifications-bar
+    .notification Your exercise has been submitted successfully.
 
 -elsif @solution.completed?
   -if @solution.published?
@@ -48,7 +43,7 @@
     .notification
       A mentor has left you a new comment.
 
--elsif @solution.independent_mode?
+-elsif !@solution.mentoring_requested?
   .notifications-bar
     .notification
       In Independent Mode you will
@@ -64,7 +59,7 @@
   .notifications-bar
     .notification
       =icon 'clock-o', 'Clock'
-      Well done on submitting. A mentor will leave you feedback shortly.
+      Well done on submitting. A mentor will leave you feedback as soon as possible.
 
 -else
   .notifications-bar
